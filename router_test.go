@@ -170,6 +170,69 @@ func TestRouter_HEAD(t *testing.T) {
 	}
 }
 
+func TestRouter_OPTIONS(t *testing.T) {
+	router := New()
+	rr := httptest.NewRecorder()
+
+	req, err := http.NewRequest(http.MethodOptions, "/hi", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	router.OPTIONS("/hi", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, expected)
+	})
+	router.ServeHTTP(rr, req)
+
+	if rr.Body.String() != expected {
+		t.Errorf(errorFormat,
+			rr.Body.String(), expected)
+	}
+}
+
+func TestRouter_CONNECT(t *testing.T) {
+	router := New()
+	rr := httptest.NewRecorder()
+
+	req, err := http.NewRequest(http.MethodConnect, "/hi", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	router.CONNECT("/hi", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, expected)
+	})
+	router.ServeHTTP(rr, req)
+
+	if rr.Body.String() != expected {
+		t.Errorf(errorFormat,
+			rr.Body.String(), expected)
+	}
+}
+
+func TestRouter_TRACE(t *testing.T) {
+	router := New()
+	rr := httptest.NewRecorder()
+
+	req, err := http.NewRequest(http.MethodTrace, "/hi", nil)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	router.TRACE("/hi", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, expected)
+	})
+	router.ServeHTTP(rr, req)
+
+	if rr.Body.String() != expected {
+		t.Errorf(errorFormat,
+			rr.Body.String(), expected)
+	}
+}
+
 func TestRouter_Group(t *testing.T) {
 	router := New()
 
@@ -643,6 +706,33 @@ func TestRouter_Generate(t *testing.T) {
 	}, routeName8)
 
 	if url, _ := mux.Generate(http.MethodHead, routeName1, params); url != "/users/xujiajun/events" {
+		t.Fatal("TestRouter_Generate test fail")
+	}
+
+	//OPTIONSAndName
+	mux.OPTIONSAndName("/users/:user/events", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("/users/:user/events"))
+	}, routeName8)
+
+	if url, _ := mux.Generate(http.MethodOptions, routeName1, params); url != "/users/xujiajun/events" {
+		t.Fatal("TestRouter_Generate test fail")
+	}
+
+	//CONNECTAndName
+	mux.CONNECTAndName("/users/:user/events", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("/users/:user/events"))
+	}, routeName8)
+
+	if url, _ := mux.Generate(http.MethodConnect, routeName1, params); url != "/users/xujiajun/events" {
+		t.Fatal("TestRouter_Generate test fail")
+	}
+
+	//TRACEAndName
+	mux.TRACEAndName("/users/:user/events", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("/users/:user/events"))
+	}, routeName8)
+
+	if url, _ := mux.Generate(http.MethodTrace, routeName1, params); url != "/users/xujiajun/events" {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 }

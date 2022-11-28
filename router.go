@@ -31,12 +31,15 @@ var (
 	idKey          = `id`
 
 	methods = map[string]struct{}{
-		http.MethodGet:    {},
-		http.MethodPost:   {},
-		http.MethodPut:    {},
-		http.MethodDelete: {},
-		http.MethodPatch:  {},
-		http.MethodHead:   {},
+		http.MethodGet:     {},
+		http.MethodPost:    {},
+		http.MethodPut:     {},
+		http.MethodDelete:  {},
+		http.MethodPatch:   {},
+		http.MethodHead:    {},
+		http.MethodOptions: {},
+		http.MethodConnect: {},
+		http.MethodTrace:   {},
 	}
 )
 
@@ -108,6 +111,24 @@ func (r *Router) HEAD(path string, handle http.HandlerFunc) {
 	r.Handle(http.MethodHead, path, handle)
 }
 
+// OPTIONS adds the route `path` that matches a OPTIONS http method to
+// execute the `handle` http.HandlerFunc.
+func (r *Router) OPTIONS(path string, handle http.HandlerFunc) {
+	r.Handle(http.MethodOptions, path, handle)
+}
+
+// CONNECT adds the route `path` that matches a CONNECT http method to
+// execute the `handle` http.HandlerFunc.
+func (r *Router) CONNECT(path string, handle http.HandlerFunc) {
+	r.Handle(http.MethodConnect, path, handle)
+}
+
+// TRACE adds the route `path` that matches a TRACE http method to
+// execute the `handle` http.HandlerFunc.
+func (r *Router) TRACE(path string, handle http.HandlerFunc) {
+	r.Handle(http.MethodTrace, path, handle)
+}
+
 // GETAndName is short for `GET` and Named routeName
 func (r *Router) GETAndName(path string, handle http.HandlerFunc, routeName string) {
 	r.parameters.routeName = routeName
@@ -142,6 +163,24 @@ func (r *Router) PATCHAndName(path string, handle http.HandlerFunc, routeName st
 func (r *Router) HEADAndName(path string, handle http.HandlerFunc, routeName string) {
 	r.parameters.routeName = routeName
 	r.HEAD(path, handle)
+}
+
+// OPTIONSAndName is short for `OPTIONS` and Named routeName
+func (r *Router) OPTIONSAndName(path string, handle http.HandlerFunc, routeName string) {
+	r.parameters.routeName = routeName
+	r.OPTIONS(path, handle)
+}
+
+// CONNECTAndName is short for `CONNECT` and Named routeName
+func (r *Router) CONNECTAndName(path string, handle http.HandlerFunc, routeName string) {
+	r.parameters.routeName = routeName
+	r.CONNECT(path, handle)
+}
+
+// TRACEAndName is short for `TRACE` and Named routeName
+func (r *Router) TRACEAndName(path string, handle http.HandlerFunc, routeName string) {
+	r.parameters.routeName = routeName
+	r.TRACE(path, handle)
 }
 
 // Group define routes groups if there is a path prefix that uses `prefix`
