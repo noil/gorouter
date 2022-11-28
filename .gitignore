@@ -4,3 +4,4 @@ profile_cpu.svg
 .idea/
 gorouter.test
 .vscode/
+*.code-workspace
