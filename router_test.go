@@ -11,9 +11,7 @@ import (
 	"testing"
 )
 
-var (
-	errorFormat, expected string
-)
+var errorFormat, expected string
 
 func init() {
 	expected = "hi,gorouter"
@@ -26,7 +24,6 @@ func TestRouter_GET(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,7 +45,6 @@ func TestRouter_URL_SUFFIX(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/hello/", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,7 +58,6 @@ func TestRouter_URL_SUFFIX(t *testing.T) {
 	if rr.Body.String() != expected {
 		t.Errorf(errorFormat, rr.Body.String(), expected)
 	}
-
 }
 
 func TestRouter_POST(t *testing.T) {
@@ -70,7 +65,6 @@ func TestRouter_POST(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodPost, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -91,7 +85,6 @@ func TestRouter_DELETE(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodDelete, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -112,7 +105,6 @@ func TestRouter_PATCH(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodPatch, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -133,7 +125,6 @@ func TestRouter_PUT(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodPut, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -154,7 +145,6 @@ func TestRouter_HEAD(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodHead, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -175,7 +165,6 @@ func TestRouter_OPTIONS(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodOptions, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -196,7 +185,6 @@ func TestRouter_CONNECT(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodConnect, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -217,7 +205,6 @@ func TestRouter_TRACE(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodTrace, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -241,7 +228,6 @@ func TestRouter_Group(t *testing.T) {
 	prefix := "/api"
 
 	req, err := http.NewRequest(http.MethodGet, prefix+"/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -263,7 +249,6 @@ func TestRouter_CustomHandleNotFound(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/xxx", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -291,7 +276,6 @@ func TestRouter_HandleNotFound(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/aaa", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -313,7 +297,6 @@ func TestRouter_CustomPanicHandler(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodPost, "/aaa", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -350,7 +333,6 @@ func TestGetParam(t *testing.T) {
 
 	param := "1"
 	req, err := http.NewRequest(http.MethodGet, "/test/"+param, nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -372,7 +354,6 @@ func TestGetAllParams(t *testing.T) {
 	param1 := "1"
 	param2 := "2"
 	req, err := http.NewRequest(http.MethodGet, "/param1/"+param1+"/param2/"+param2, nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -397,7 +378,6 @@ func TestGetAllParamsMiss(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/param1", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -408,14 +388,13 @@ func TestGetAllParamsMiss(t *testing.T) {
 		if params != nil {
 			t.Fatal("TestGetAllParams test fail")
 		}
-
 	})
 	router.ServeHTTP(rr, req)
 }
 
 func withLogging(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//log.Printf("Logged connection from %s", r.RemoteAddr)
+		// log.Printf("Logged connection from %s", r.RemoteAddr)
 		next.ServeHTTP(w, r)
 	}
 }
@@ -426,7 +405,6 @@ func TestRouter_Use(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/hi", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -449,7 +427,6 @@ func TestRouter_UseForRoot(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -473,7 +450,6 @@ func TestRouter_Regex(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/param/1", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -499,7 +475,6 @@ func TestRouter_HandleRoot(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -523,7 +498,6 @@ func TestRouter_HandlePanic(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	req, err := http.NewRequest(http.MethodGet, "/", nil)
-
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -585,7 +559,7 @@ func TestRouter_Generate(t *testing.T) {
 	params := make(map[string]string)
 	params["user"] = "xujiajun"
 
-	//GETAndName
+	// GETAndName
 	mux.GETAndName("/users/:user/events", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/users/:user/events"))
 	}, routeName1)
@@ -599,7 +573,7 @@ func TestRouter_Generate(t *testing.T) {
 	params["owner"] = "xujiajun"
 	params["repo"] = "xujiajun_repo"
 
-	//POSTAndName
+	// POSTAndName
 	mux.POSTAndName("/repos/{owner:\\w+}/{repo:\\w+}/keys", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/users/:user/repos"))
 	}, routeName2)
@@ -608,7 +582,7 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//DELETEAndName
+	// DELETEAndName
 	routeName3 := "repos_releases"
 	mux.DELETEAndName("/repos/{owner:\\w+}/{repo:\\w+}/releases/{id:[0-9]+}", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/repos/{owner:\\w+}/{repo:\\w+}/releases/{id:[0-9]+}"))
@@ -621,7 +595,7 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//PUTAndName
+	// PUTAndName
 	routeName4 := "user_following"
 	params = make(map[string]string)
 	params["user"] = "xujiajun001"
@@ -633,7 +607,7 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//PATCHAndName
+	// PATCHAndName
 	routeName6 := "repos_keys"
 	params = make(map[string]string)
 	params["owner"] = "xujiajun001"
@@ -647,7 +621,7 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//params contains wrong parameters
+	// params contains wrong parameters
 	routeName5 := "user_event3"
 	mux.GETAndName("/users/{user:\\w+}/events", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/users/{user:\\w+}/events"))
@@ -666,7 +640,7 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//pattern grammar error
+	// pattern grammar error
 	routeName7 := "user_event4"
 	mux.GETAndName("/users/user:\\w+}/events", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/users/user:\\w+}/events"))
@@ -686,12 +660,12 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//cannot found route in tree
+	// cannot found route in tree
 	if _, err := mux.Generate("GET", "notFoundRouteName", params); err == nil {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//cannot found method in tree
+	// cannot found method in tree
 	if _, err := mux.Generate("METHOD", routeName5, params); err == nil {
 		t.Fatal("TestRouter_Generate test fail")
 	}
@@ -700,7 +674,7 @@ func TestRouter_Generate(t *testing.T) {
 	params = make(map[string]string)
 	params["user"] = "xujiajun"
 
-	//HEADAndName
+	// HEADAndName
 	mux.HEADAndName("/users/:user/events", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/users/:user/events"))
 	}, routeName8)
@@ -709,7 +683,7 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//OPTIONSAndName
+	// OPTIONSAndName
 	mux.OPTIONSAndName("/users/:user/events", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/users/:user/events"))
 	}, routeName8)
@@ -718,7 +692,7 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//CONNECTAndName
+	// CONNECTAndName
 	mux.CONNECTAndName("/users/:user/events", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/users/:user/events"))
 	}, routeName8)
@@ -727,12 +701,57 @@ func TestRouter_Generate(t *testing.T) {
 		t.Fatal("TestRouter_Generate test fail")
 	}
 
-	//TRACEAndName
+	// TRACEAndName
 	mux.TRACEAndName("/users/:user/events", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/users/:user/events"))
 	}, routeName8)
 
 	if url, _ := mux.Generate(http.MethodTrace, routeName1, params); url != "/users/xujiajun/events" {
 		t.Fatal("TestRouter_Generate test fail")
+	}
+}
+
+func TestRouter_GeneralPath(t *testing.T) {
+	router := New()
+
+	tt := []struct {
+		method  string
+		general string
+		request string
+	}{
+		{
+			method:  http.MethodGet,
+			general: "xxx/:param1/yyy/:param2",
+			request: "/xxx/1/yyy/2",
+		},
+		{
+			method:  http.MethodPost,
+			general: "param/{id:[0-9]+}/save",
+			request: "/param/2/save",
+		},
+		{
+			method:  http.MethodGet,
+			general: "hi",
+			request: "/hi",
+		},
+	}
+
+	for _, tc := range tt {
+		router.Handle(tc.method, tc.general, func(w http.ResponseWriter, r *http.Request) {})
+
+		req, err := http.NewRequest(tc.method, tc.request, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		got, ok := router.GeneralPath(req)
+		if !ok {
+			t.Errorf("path not found: request path: %s", tc.request)
+		}
+
+		if got != tc.general {
+			t.Errorf("not excepted general url: want %s: got: %s", tc.general, got)
+		}
+
 	}
 }

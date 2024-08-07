@@ -293,6 +293,69 @@ func GetAllParams(r *http.Request) paramsMapType {
 	return nil
 }
 
+// GeneralPath returns the general path of the request.
+// General Path is the path with parameters template.
+func (r *Router) GeneralPath(req *http.Request) (string, bool) {
+	requestURL := req.URL.Path
+
+	if !r.hasMethod(req.Method) {
+		return "", false
+	}
+
+	if node, ok := r.isWithoutParams(req.Method, requestURL); ok {
+		return node.path, true
+	}
+
+	if node, _, ok := r.isWithParams(req.Method, requestURL); ok {
+		return node.path, true
+	}
+
+	return "", false
+}
+
+func (r *Router) hasMethod(method string) bool {
+	_, ok := r.trees[method]
+	return ok
+}
+
+func (r *Router) isWithoutParams(method, url string) (*Node, bool) {
+	nodes := r.trees[method].Find(url, false)
+	if len(nodes) > 0 {
+		node := nodes[0]
+
+		if node.handle != nil {
+			if node.path == url {
+				return node, true
+			}
+			if node.path == url[1:] {
+				return node, true
+			}
+		}
+	}
+
+	return nil, false
+}
+
+func (r *Router) isWithParams(method, url string) (*Node, paramsMapType, bool) {
+	nodes := r.trees[method].Find(url, false)
+
+	if len(nodes) == 0 {
+		res := strings.Split(url, "/")
+
+		prefix := res[1]
+		nodes := r.trees[method].Find(prefix, true)
+		for _, node := range nodes {
+			if handler := node.handle; handler != nil && node.path != url {
+				if matchParamsMap, ok := r.matchAndParse(url, node.path); ok {
+					return node, matchParamsMap, true
+				}
+			}
+		}
+	}
+
+	return nil, nil, false
+}
+
 // ServeHTTP makes the router implement the http.Handler interface.
 func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	requestURL := req.URL.Path
@@ -364,7 +427,7 @@ func (r *Router) HandleNotFound(w http.ResponseWriter, req *http.Request, middle
 
 // handle executes middleware chain
 func handle(w http.ResponseWriter, req *http.Request, handler http.HandlerFunc, middleware []MiddlewareType) {
-	var baseHandler = handler
+	baseHandler := handler
 	for _, m := range middleware {
 		baseHandler = m(baseHandler)
 	}
